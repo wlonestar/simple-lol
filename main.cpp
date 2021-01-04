@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <iostream>
 #include <graphics.h>
 #include <conio.h>
 #include <math.h>
@@ -10,78 +10,112 @@
 #define HEIGHT 785
 #define sn_width 91//人物宽度
 #define sn_height 104//人物高度
+#define bullet_width 19*1.5
+#define bullet_height 39*1.5
 
 IMAGE background;
+IMAGE begin_menu;
+IMAGE begin_option;
+IMAGE option;
 IMAGE sn;
 IMAGE sn_up;
 IMAGE sn_down;
 IMAGE sn_left;
 IMAGE sn_right;
-IMAGE sn_northeast;
-IMAGE sn_southeast;
-IMAGE sn_northwest;
-IMAGE sn_southwest;
 IMAGE yasuo;
+IMAGE bullets;
+IMAGE bullet_up;
+IMAGE bullet_down;
+IMAGE bullet_left;
+IMAGE bullet_right;
 
 // 载入PNG图并去透明部分
-void drawAlpha(IMAGE* picture, int  picture_x, int picture_y) //x为载入图片的X坐标，y为Y坐标
+void drawAlpha(IMAGE* picture, int picture_x, int picture_y) //x为载入图片的X坐标，y为Y坐标
 {
 	DWORD* dst = GetImageBuffer();    // GetImageBuffer()函数，用于获取绘图设备的显存指针，EASYX自带
-	DWORD* draw = GetImageBuffer();
 	DWORD* src = GetImageBuffer(picture); //获取picture的显存指针
-	int picture_width = picture->getwidth(); //获取picture的宽度，EASYX自带
-	int picture_height = picture->getheight(); //获取picture的高度，EASYX自带
-	int graphWidth = getwidth();       //获取绘图区的宽度，EASYX自带
-	int graphHeight = getheight();     //获取绘图区的高度，EASYX自带
-	int dstX = 0;    //在显存里像素的角标
-	for (int iy = 0; iy < picture_height; iy++) // 实现透明贴图 公式： Cp=αp*FP+(1-αp)*BP ， 贝叶斯定理来进行点颜色的概率计算
+	int src_width = picture->getwidth();
+	int src_height = picture->getheight();
+	int dst_width = getwidth();
+	int dst_height = getheight();
+	int im_width, im_height;
+	if (picture_x + src_width > dst_width)
+		im_width = dst_width - picture_x;
+	else
+		im_width = src_width;
+	if (picture_y + src_height > dst_height)
+		im_height = dst_height - picture_y;
+	else
+		im_height = src_height;
+	if (picture_x < 0)
 	{
-		for (int ix = 0; ix < picture_width; ix++)
+		src = src - picture_x;
+		im_width = im_width + picture_x;
+		picture_x = 0;
+	}
+	if (picture_y < 0)
+	{
+		src = src - src_width * picture_y;
+		im_height = im_height + picture_y;
+		picture_y = 0;
+	}
+	dst = dst + dst_width * picture_y + picture_x;
+	for (int i = 0; i < im_height; i++)
+	{
+		for (int j = 0; j < im_width; j++)
 		{
-			int srcX = ix + iy * picture_width; //在显存里像素的角标
-			int sa = ((src[srcX] & 0xff000000) >> 24); //0xAArrggbb;AA是透明度
-			int sr = ((src[srcX] & 0xff0000) >> 16); //获取RGB里的R
-			int sg = ((src[srcX] & 0xff00) >> 8);   //G
-			int sb = src[srcX] & 0xff;              //B
-			if (ix >= 0 && ix <= graphWidth && iy >= 0 && iy <= graphHeight && dstX <= graphWidth * graphHeight)
-			{
-				dstX = (ix + picture_x) + (iy + picture_y) * graphWidth; //在显存里像素的角标
-				int dr = ((dst[dstX] & 0xff0000) >> 16);
-				int dg = ((dst[dstX] & 0xff00) >> 8);
-				int db = dst[dstX] & 0xff;
-				draw[dstX] = ((sr * sa / 255 + dr * (255 - sa) / 255) << 16)  //公式： Cp=αp*FP+(1-αp)*BP  ； αp=sa/255 , FP=sr , BP=dr
-					| ((sg * sa / 255 + dg * (255 - sa) / 255) << 8)         //αp=sa/255 , FP=sg , BP=dg
-					| (sb * sa / 255 + db * (255 - sa) / 255);              //αp=sa/255 , FP=sb , BP=db
-			}
+			int src_r = ((src[j] & 0xff0000) >> 16);
+			int src_g = ((src[j] & 0xff00) >> 8);
+			int src_b = src[j] & 0xff;
+			int src_a = ((src[j] & 0xff000000) >> 24);
+			int dst_r = ((dst[j] & 0xff0000) >> 16);
+			int dst_g = ((dst[j] & 0xff00) >> 8);
+			int dst_b = dst[j] & 0xff;
+			dst[j] = ((src_r + dst_r * (255 - src_a) / 255) << 16) | ((src_g + dst_g * (255 - src_a) / 255) << 8) | (src_b + dst_b * (255 - src_a) / 255);
 		}
+		dst = dst + dst_width;
+		src = src + src_width;
 	}
 }
 
+//载入图片
 void loadimage()
 {
 	loadimage(&background, _T("./images/bk.jpg"));
-	loadimage(&sn, _T("./images/sn.png"), sn_width, sn_height);
+	loadimage(&begin_menu, _T("./images/menu.jpg"));
+	loadimage(&begin_option, _T("./images/begin_option.png"));
+	loadimage(&option, _T("./images/option.jpg"), WIDTH, HEIGHT);
 	loadimage(&sn_up, _T("./images/sn_up.png"), sn_width, sn_height);
 	loadimage(&sn_down, _T("./images/sn_down.png"), sn_width, sn_height);
 	loadimage(&sn_left, _T("./images/sn_left.png"), sn_width, sn_height);
 	loadimage(&sn_right, _T("./images/sn_right.png"), sn_width, sn_height);
-	loadimage(&sn_northeast, _T("./images/sn_northeast.png"), sn_width, sn_height);
-	loadimage(&sn_southeast, _T("./images/sn_southeast.png"), sn_width, sn_height);
-	loadimage(&sn_northwest, _T("./images/sn_northwest.png"), sn_width, sn_height);
-	loadimage(&sn_southwest, _T("./images/sn_southwest.png"), sn_width, sn_height);
 	loadimage(&yasuo, _T("./images/yasuo.png"));
+	loadimage(&bullet_up, _T("./images/bullet_up.png"), bullet_width, bullet_height);
+	loadimage(&bullet_down, _T("./images/bullet_down.png"), bullet_width, bullet_height);
+	loadimage(&bullet_left, _T("./images/bullet_left.png"), bullet_height, bullet_width);
+	loadimage(&bullet_right, _T("./images/bullet_right.png"), bullet_height, bullet_width);
 }
+
+double ez_x = WIDTH / 2;
+double ez_y = HEIGHT / 2;
+double ez_v = 1;//速度
+int is = 0;
+int eis = 1;
+char ez_direction = 'w';
+
+double en_x, en_y;//当前位置
+double x, y;//距离之差
+double encos, ensin;
+double en_vx, en_vy;
+double en_v = 0.3;
+
+double eza_v;
+double eza_x, eza_y;
+double eza_l = 0;
+double eza_dir = 'w';
 
 class Hero {
 public:
-	double Enx, Eny, Env;
-	double Esin, Ecos, Envx, Envy;
-	double ez_x = WIDTH / 2;
-	double ez_y = HEIGHT / 2;
-	double ez_v = 1;//速度
-	double eza_x, eza_y, eza_v, eza_l = 0, eza_dir = 'w';
-	int is = 0;
-	char ez_direction = 'w';
 
 	void ShowHero() 
 	{
@@ -90,53 +124,118 @@ public:
 
 	void UpdateHero()
 	{
-		if (ez_direction == 'w') 
+		if (ez_direction == 'w')
 			sn = sn_up;
-		else if (ez_direction == 'a') 
+		else if (ez_direction == 'a')
 			sn = sn_left;
-		else if (ez_direction == 's') 
+		else if (ez_direction == 's')
 			sn = sn_down;
-		else if (ez_direction == 'd') 
+		else if (ez_direction == 'd')
 			sn = sn_right;
 	}
 
 	void MoveHero()
 	{
-		if ((GetAsyncKeyState(0x41) & 0x8000)) 
-		{ //a
+		if (!is)
+			eza_dir = ez_direction;
+		if ((GetAsyncKeyState(0x41) & 0x8000)) //a
+		{
 			ez_x -= ez_v;
 			ez_direction = 'a';
-			if (!is)
-				eza_dir = 'a';
+			if (ez_x <= 0)
+			{
+				ez_direction = 'd';
+				ez_x += ez_v;
+				ez_direction = 'a';
+			}
 		}
-		if ((GetAsyncKeyState(0x44) & 0x8000)) 
-		{ //d
+		if ((GetAsyncKeyState(0x44) & 0x8000)) //d
+		{
 			ez_x += ez_v;
 			ez_direction = 'd';
-			if (!is)
-				eza_dir = 'd';
+			if (ez_x >= WIDTH - double(sn_width))
+			{
+				ez_direction = 'a';
+				ez_x -= ez_v;
+				ez_direction = 'd';
+			}
 		}
-		if (GetAsyncKeyState(0x57) & 0x8000) 
-		{  // w
+		if (GetAsyncKeyState(0x57) & 0x8000) //w
+		{
 			ez_y -= ez_v;
 			ez_direction = 'w';
-			if (!is)
-				eza_dir = 'w';
+			if (ez_y <= 0)
+			{
+				ez_direction = 's';
+				ez_y += ez_v;
+				ez_direction = 'w';
+			}
 		}
-		if ((GetAsyncKeyState(0x53) & 0x8000)) 
-		{ //s
+		if ((GetAsyncKeyState(0x53) & 0x8000)) //s
+		{
 			ez_y += ez_v;
 			ez_direction = 's';
-			if (!is)
-				eza_dir = 's';
+			if (ez_y >= HEIGHT - double(sn_height))
+			{
+				ez_direction = 'w';
+				ez_y -= ez_v;
+				ez_direction = 's';
+			}
 		}
 	}
+};
 
-	void StartUpBullet()
+class Enemy {
+public:
+
+	void InitEnemy()
 	{
-		eza_v = 3;
+		en_x = 200;
+		en_y = 200;
+		en_v = 0.3;
+	}
+
+	void ShowEnemy() 
+	{
+		if(eis)
+		drawAlpha(&yasuo, en_x, en_y);
+	}
+
+	void MoveEnemy()
+	{
+		encos = (ez_x - en_x) / sqrt((ez_x - en_x) * (ez_x - en_x) + (ez_y - en_y) * (ez_y - en_y));
+		ensin = (ez_y - en_y) / sqrt((ez_x - en_x) * (ez_x - en_x) + (ez_y - en_y) * (ez_y - en_y));
+		en_vx = encos * en_v;
+		en_vy = ensin * en_v;
+		en_x += en_vx;
+		en_y += en_vy;
+	}
+
+};
+
+class Bullet {
+public:
+
+	void InitBullet()
+	{
+		eza_v = 5;
 		eza_x = ez_x;
 		eza_y = ez_y;
+	}
+
+	void ShowBullet() 
+	{
+		if (is)
+			drawAlpha(&bullets, eza_x, eza_y);
+	}
+
+	void attack()
+	{
+		if (sqrt((eza_x+19*0.75 - en_x-75) * (eza_x+19*0.75- en_x-75) + (eza_y+19*0.75- en_y-60) * (eza_y+19*0.75 - en_y-60) <= 120))
+		{
+			eis=0;
+			is = 0;
+		}
 	}
 
 	void UpdataBullet()
@@ -145,21 +244,26 @@ public:
 		{
 			eza_x -= eza_v;
 			eza_l += eza_v;
+			bullets = bullet_left;
+			//if (eza_x <= 0)
 		}
 		else if (eza_dir == 'd')
 		{
 			eza_x += eza_v;
 			eza_l += eza_v;
+			bullets = bullet_right;
 		}
 		else if (eza_dir == 'w')
 		{
 			eza_y -= eza_v;
 			eza_l += eza_v;
+			bullets = bullet_up;
 		}
 		else if (eza_dir == 's')
 		{
 			eza_y += eza_v;
 			eza_l += eza_v;
+			bullets = bullet_down;
 		}
 		if (eza_l >= 800)
 		{
@@ -168,54 +272,30 @@ public:
 		}
 	}
 
-	void BulletMove()
+	void MoveBullet()
 	{
-		if ((GetAsyncKeyState(0x51) & 0x8000) && is == 0)
+		if ((GetAsyncKeyState(0x51) & 0x8000) && is == 0) //q
 		{
 			is = 1;
-			eza_x = ez_x;
-			eza_y = ez_y;
+			eza_x = ez_x+28;
+			eza_y = ez_y+28;
 		}
-		drawAlpha(&yasuo, Enx, Eny);
 	}
 
-	void ShowBullet()
-	{
-		if (is == 1)
-			drawAlpha(&yasuo, eza_x, eza_y);
-	}
-
-	void EnStartUp()
-	{
-		Enx = 200;
-		Eny = 200;
-		Env = 0.3;
-	}
-
-	void ShowEnemy()
-	{
-		drawAlpha(&yasuo, Enx, Eny);
-	}
-	
-	void EnMove()
-	{
-		Ecos = (ez_x - Enx) / sqrt((ez_x - Enx) * (ez_x - Enx) + (ez_y - Eny) * (ez_y - Eny));
-		Esin = (ez_y - Eny) / sqrt((ez_x - Enx) * (ez_x - Enx) + (ez_y - Eny) * (ez_y - Eny));
-		Envx = Ecos * Env;
-		Envy = Esin * Env;
-		Enx += Envx;
-		Eny += Envy;
-	}
 };
+
+Menu menu;
 Hero hero;
+Enemy enemy;
+Bullet bullet;
 
 void StartUp()
 {
 	initgraph(WIDTH, HEIGHT);
-	hero.EnStartUp();
-	hero.StartUpBullet();
 	changetitle();
 	loadimage();
+	enemy.InitEnemy();
+	bullet.InitBullet();
 	BeginBatchDraw();
 }
 
@@ -223,8 +303,9 @@ void Show()
 {
 	putimage(0, 0, &background);
 	hero.ShowHero();
-	hero.ShowEnemy();
-	hero.ShowBullet();
+	enemy.ShowEnemy();
+	bullet.UpdataBullet();
+	bullet.ShowBullet();
 	FlushBatchDraw();
 }
 
@@ -235,9 +316,9 @@ void UpdateWithoutInput()
 	if (waitIndex == 2)
 	{
 		hero.MoveHero();
-		hero.EnMove();
-		hero.UpdataBullet();
-		hero.BulletMove();
+		enemy.MoveEnemy();
+		bullet.MoveBullet();
+		bullet.attack();
 		waitIndex = 1;
 	}
 }
@@ -252,9 +333,9 @@ int main(void)
 	StartUp();
 	while (1)
 	{
+		Show();
 		UpdateWithInput();
 		UpdateWithoutInput();
-		Show();
 	}
 	return 0;
 }
