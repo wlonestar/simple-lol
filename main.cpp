@@ -34,7 +34,7 @@ static int Enmax = 1;
 static int Ennum = 1;
 
 // 载入PNG图并去透明部分
-void drawAlpha(IMAGE* picture, int picture_x, int picture_y) //x为载入图片的X坐标，y为Y坐标
+void drawAlpha(IMAGE* picture, int  picture_x, int picture_y) //x为载入图片的X坐标，y为Y坐标
 {
 	DWORD* dst = GetImageBuffer();    // GetImageBuffer()函数，用于获取绘图设备的显存指针，EASYX自带
 	DWORD* src = GetImageBuffer(picture); //获取picture的显存指针
@@ -93,7 +93,7 @@ void loadimage()
 	loadimage(&sn_down, _T("./images/sn_down.png"), sn_width, sn_height);
 	loadimage(&sn_left, _T("./images/sn_left.png"), sn_width, sn_height);
 	loadimage(&sn_right, _T("./images/sn_right.png"), sn_width, sn_height);
-	loadimage(&yasuo, _T("./images/yasuo.png"),125,100);
+	loadimage(&yasuo, _T("./images/yasuo.png"), 125, 100);
 	loadimage(&bullet_up, _T("./images/bullet_up.png"), bullet_width, bullet_height);
 	loadimage(&bullet_down, _T("./images/bullet_down.png"), bullet_width, bullet_height);
 	loadimage(&bullet_left, _T("./images/bullet_left.png"), bullet_height, bullet_width);
@@ -108,11 +108,15 @@ int eis[15] = { 1 };
 int Enexist[15] = { 0 };
 int score = 0;
 char ez_direction = 'w';
+char eze = 'w';
+int iseze = 1;
+int eif = 1;
+int alive = 1;
 
-double en_x[15], en_y[15];//当前位置
-double x[15], y[15];//距离之差
-double encos[15], ensin[15];
-double en_vx[15], en_vy[15];
+double en_x[5], en_y[5];//当前位置
+double x[5], y[5];//距离之差
+double encos[5], ensin[5];
+double en_vx[5], en_vy[5];
 double en_v = 0.3;
 
 double eza_v;
@@ -130,6 +134,7 @@ public:
 
 	void UpdateHero()
 	{
+		int i;
 		if (ez_direction == 'w')
 			sn = sn_up;
 		else if (ez_direction == 'a')
@@ -138,12 +143,47 @@ public:
 			sn = sn_down;
 		else if (ez_direction == 'd')
 			sn = sn_right;
+		for (i = 0;i < 5;i++)
+		{
+			if (sqrt((ez_x - en_x[i]) * (ez_x - en_x[i]) + (ez_y - en_y[i]) * (ez_y - en_y[i]) <= 1000))
+				alive = 0;
+		}
+	}
+
+	void ezE()
+	{
+		if ((GetAsyncKeyState(0x45) & 0x8000) && iseze == 1)
+		{
+			if (eze == 'a')
+			{
+				ez_x -= 200;
+				iseze = 0;
+			}
+			else if (eze == 'd')
+			{
+				ez_x += 200;
+				iseze = 0;
+			}
+			else if (eze == 'w')
+			{
+				ez_y -= 200;
+				iseze = 0;
+			}
+			else if (eze == 's')
+			{
+				ez_y += 200;
+				iseze = 0;
+			}
+		}
 	}
 
 	void MoveHero()
 	{
 		if (!is)
 			eza_dir = ez_direction;
+		if (iseze)
+			eze = ez_direction;
+		ezE();
 		if ((GetAsyncKeyState(0x41) & 0x8000)) //a
 		{
 			ez_x -= ez_v;
@@ -198,13 +238,13 @@ public:
 	{
 		Enexist[0] = 1;
 		int i;
-		for (i = 0;i < 15;i++)
+		for (i = 0;i < 5;i++)
 		{
 			if (i % 2 == 1)
 				en_x[i] = -50;
 			else
 				en_x[i] = 1570;
-			en_y[i]= rand()%785;
+			en_y[i] = rand() % 785;
 			en_v = 0.3;
 		}
 	}
@@ -212,7 +252,7 @@ public:
 	void MoveEnemy()
 	{
 		int i = 0;
-		for (i = 0;i < 15;i++)
+		for (i = 0;i < 5;i++)
 		{
 			if (Enexist[i])
 			{
@@ -224,9 +264,30 @@ public:
 				en_y[i] += en_vy[i];
 				if (eis[i] == 0)
 				{
-					en_x[i] = -20 || 1570;
-					en_y[i] = rand() % 785;
-					eis[i] = 1;
+					if (i % 4 == 1)
+					{
+						en_x[i] = 1670;
+						en_y[i] = rand() % 785;
+						eis[i] = 1;
+					}
+					else if (i % 4 == 2)
+					{
+						en_x[i] = -70;
+						en_y[i] = rand() % 785;
+						eis[i] = 1;
+					}
+					else if (i % 4 == 3)
+					{
+						en_y[i] = -70;
+						en_x[i] = rand() % 1520;
+						eis[i] = 1;
+					}
+					else if (i % 4 == 0)
+					{
+						en_y[i] = 850;
+						en_x[i] = rand() % 1520;
+						eis[i] = 1;
+					}
 				}
 			}
 			else
@@ -237,12 +298,14 @@ public:
 	void attack()
 	{
 		int i;
-		for (i = 0;i < 15;i++)
+		for (i = 0;i < 5;i++)
 		{
-			if(Enexist[i])
+			if (Enexist[i])
 			{
-				if (sqrt((eza_x + 19 * 0.75 - en_x[i] - 45) * (eza_x + 19 * 0.75 - en_x[i] - 45) + (eza_y + 19 * 0.75 - en_y[i] - 35) * (eza_y + 19 * 0.75 - en_y[i] - 35) <= 160))
+				if (sqrt((eza_x + 19 * 0.75 - en_x[i] - 65) * (eza_x + 19 * 0.75 - en_x[i] - 65) + (eza_y + 19 * 0.75 - en_y[i] - 50) * (eza_y + 19 * 0.75 - en_y[i] - 50) <= 200))
 				{
+					eza_x = -1000;
+					eza_y = -1000;
 					eis[i] = 0;
 					is = 0;
 					score++;
@@ -256,17 +319,10 @@ public:
 	void ShowEnemy()
 	{
 		int i;
-		for(i = 0;i < 15;i++)
+		for (i = 0;i < 5;i++)
 		{
 			if (Enexist[i])
-			{
 				drawAlpha(&yasuo, en_x[i], en_y[i]);
-				if (Ennum < Enmax)
-				{
-					Ennum++;
-					Enexist[i + 1] = 1;
-				}
-			}
 		}
 	}
 
@@ -311,12 +367,14 @@ public:
 			eza_y += eza_v;
 			bullets = bullet_down;
 		}
-		if(is)
+		if (is)
 			eza_l += eza_v;
 		if (eza_l >= 600)
 		{
 			is = 0;
 			eza_l = 0;
+			eza_x = -1000;
+			eza_y = -1000;
 		}
 	}
 
@@ -325,8 +383,8 @@ public:
 		if ((GetAsyncKeyState(0x51) & 0x8000) && is == 0) //q
 		{
 			is = 1;
-			eza_x = ez_x+28;
-			eza_y = ez_y+28;
+			eza_x = ez_x + 28;
+			eza_y = ez_y + 28;
 		}
 	}
 
@@ -358,17 +416,33 @@ void Show()
 
 void UpdateWithoutInput()
 {
-	int enNum = 1;
 	static int lastSecond = 0;//记录前一次运行的秒数
 	static int nowSecond = 0;//记录当前运行了多少秒
 	static clock_t start = clock();//记录第一次运行时刻
 	clock_t now = clock();//获得当前时刻
-	if (nowSecond == lastSecond + 5)
+	static int estartsecond = 0;
+	static int elastsecond = 0;
+	if (nowSecond == lastSecond + 5 && Enmax <= 10)
 	{
 		lastSecond = nowSecond;
 		Enmax += 1;
+		Enexist[Enmax - 1] = 1;
 	}
 	nowSecond = (int(now - start) / CLOCKS_PER_SEC);
+	if (iseze == 0)
+	{
+		elastsecond = nowSecond;
+		if (eif)
+		{
+			estartsecond = nowSecond;
+			eif = 0;
+		}
+		if (elastsecond == estartsecond + 5)
+		{
+			iseze = 1;
+			eif = 1;
+		}
+	}
 	static int waitIndex = 1;
 	waitIndex++;
 	if (waitIndex == 2)
@@ -389,7 +463,7 @@ void UpdateWithInput()
 int main(void)
 {
 	StartUp();
-	while (1)
+	while (alive)
 	{
 		Show();
 		UpdateWithInput();
