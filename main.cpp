@@ -3,6 +3,7 @@
 #include <conio.h>
 #include <math.h>
 #include <mmstream.h>
+#include<time.h>
 #pragma comment(lib, "Winmm.lib")
 
 #define PI 3.14159265359
@@ -28,6 +29,9 @@ IMAGE bullet_up;
 IMAGE bullet_down;
 IMAGE bullet_left;
 IMAGE bullet_right;
+
+static int Enmax = 1;
+static int Ennum = 1;
 
 // 载入PNG图并去透明部分
 void drawAlpha(IMAGE* picture, int picture_x, int picture_y) //x为载入图片的X坐标，y为Y坐标
@@ -89,7 +93,7 @@ void loadimage()
 	loadimage(&sn_down, _T("./images/sn_down.png"), sn_width, sn_height);
 	loadimage(&sn_left, _T("./images/sn_left.png"), sn_width, sn_height);
 	loadimage(&sn_right, _T("./images/sn_right.png"), sn_width, sn_height);
-	loadimage(&yasuo, _T("./images/yasuo.png"));
+	loadimage(&yasuo, _T("./images/yasuo.png"),125,100);
 	loadimage(&bullet_up, _T("./images/bullet_up.png"), bullet_width, bullet_height);
 	loadimage(&bullet_down, _T("./images/bullet_down.png"), bullet_width, bullet_height);
 	loadimage(&bullet_left, _T("./images/bullet_left.png"), bullet_height, bullet_width);
@@ -100,13 +104,15 @@ double ez_x = WIDTH / 2;
 double ez_y = HEIGHT / 2;
 double ez_v = 1;//速度
 int is = 0;
-int eis = 1;
+int eis[15] = { 1 };
+int Enexist[15] = { 0 };
+int score = 0;
 char ez_direction = 'w';
 
-double en_x, en_y;//当前位置
-double x, y;//距离之差
-double encos, ensin;
-double en_vx, en_vy;
+double en_x[15], en_y[15];//当前位置
+double x[15], y[15];//距离之差
+double encos[15], ensin[15];
+double en_vx[15], en_vy[15];
 double en_v = 0.3;
 
 double eza_v;
@@ -190,25 +196,78 @@ public:
 
 	void InitEnemy()
 	{
-		en_x = 200;
-		en_y = 200;
-		en_v = 0.3;
-	}
-
-	void ShowEnemy() 
-	{
-		if(eis)
-		drawAlpha(&yasuo, en_x, en_y);
+		Enexist[0] = 1;
+		int i;
+		for (i = 0;i < 15;i++)
+		{
+			if (i % 2 == 1)
+				en_x[i] = -50;
+			else
+				en_x[i] = 1570;
+			en_y[i]= rand()%785;
+			en_v = 0.3;
+		}
 	}
 
 	void MoveEnemy()
 	{
-		encos = (ez_x - en_x) / sqrt((ez_x - en_x) * (ez_x - en_x) + (ez_y - en_y) * (ez_y - en_y));
-		ensin = (ez_y - en_y) / sqrt((ez_x - en_x) * (ez_x - en_x) + (ez_y - en_y) * (ez_y - en_y));
-		en_vx = encos * en_v;
-		en_vy = ensin * en_v;
-		en_x += en_vx;
-		en_y += en_vy;
+		int i = 0;
+		for (i = 0;i < 15;i++)
+		{
+			if (Enexist[i])
+			{
+				encos[i] = (ez_x - en_x[i]) / sqrt((ez_x - en_x[i]) * (ez_x - en_x[i]) + (ez_y - en_y[i]) * (ez_y - en_y[i]));
+				ensin[i] = (ez_y - en_y[i]) / sqrt((ez_x - en_x[i]) * (ez_x - en_x[i]) + (ez_y - en_y[i]) * (ez_y - en_y[i]));
+				en_vx[i] = encos[i] * en_v;
+				en_vy[i] = ensin[i] * en_v;
+				en_x[i] += en_vx[i];
+				en_y[i] += en_vy[i];
+				if (eis[i] == 0)
+				{
+					en_x[i] = -20 || 1570;
+					en_y[i] = rand() % 785;
+					eis[i] = 1;
+				}
+			}
+			else
+				break;
+		}
+	}
+
+	void attack()
+	{
+		int i;
+		for (i = 0;i < 15;i++)
+		{
+			if(Enexist[i])
+			{
+				if (sqrt((eza_x + 19 * 0.75 - en_x[i] - 45) * (eza_x + 19 * 0.75 - en_x[i] - 45) + (eza_y + 19 * 0.75 - en_y[i] - 35) * (eza_y + 19 * 0.75 - en_y[i] - 35) <= 160))
+				{
+					eis[i] = 0;
+					is = 0;
+					score++;
+				}
+			}
+			else
+				break;
+		}
+	}
+
+	void ShowEnemy()
+	{
+		int i;
+		for(i = 0;i < 15;i++)
+		{
+			if (Enexist[i])
+			{
+				drawAlpha(&yasuo, en_x[i], en_y[i]);
+				if (Ennum < Enmax)
+				{
+					Ennum++;
+					Enexist[i + 1] = 1;
+				}
+			}
+		}
 	}
 
 };
@@ -218,7 +277,7 @@ public:
 
 	void InitBullet()
 	{
-		eza_v = 5;
+		eza_v = 4.2;
 		eza_x = ez_x;
 		eza_y = ez_y;
 	}
@@ -229,43 +288,32 @@ public:
 			drawAlpha(&bullets, eza_x, eza_y);
 	}
 
-	void attack()
-	{
-		if (sqrt((eza_x+19*0.75 - en_x-75) * (eza_x+19*0.75- en_x-75) + (eza_y+19*0.75- en_y-60) * (eza_y+19*0.75 - en_y-60) <= 120))
-		{
-			eis=0;
-			is = 0;
-		}
-	}
 
 	void UpdataBullet()
 	{
 		if (eza_dir == 'a')
 		{
 			eza_x -= eza_v;
-			eza_l += eza_v;
 			bullets = bullet_left;
-			//if (eza_x <= 0)
 		}
 		else if (eza_dir == 'd')
 		{
 			eza_x += eza_v;
-			eza_l += eza_v;
 			bullets = bullet_right;
 		}
 		else if (eza_dir == 'w')
 		{
 			eza_y -= eza_v;
-			eza_l += eza_v;
 			bullets = bullet_up;
 		}
 		else if (eza_dir == 's')
 		{
 			eza_y += eza_v;
-			eza_l += eza_v;
 			bullets = bullet_down;
 		}
-		if (eza_l >= 800)
+		if(is)
+			eza_l += eza_v;
+		if (eza_l >= 600)
 		{
 			is = 0;
 			eza_l = 0;
@@ -284,7 +332,6 @@ public:
 
 };
 
-Menu menu;
 Hero hero;
 Enemy enemy;
 Bullet bullet;
@@ -311,14 +358,25 @@ void Show()
 
 void UpdateWithoutInput()
 {
+	int enNum = 1;
+	static int lastSecond = 0;//记录前一次运行的秒数
+	static int nowSecond = 0;//记录当前运行了多少秒
+	static clock_t start = clock();//记录第一次运行时刻
+	clock_t now = clock();//获得当前时刻
+	if (nowSecond == lastSecond + 5)
+	{
+		lastSecond = nowSecond;
+		Enmax += 1;
+	}
+	nowSecond = (int(now - start) / CLOCKS_PER_SEC);
 	static int waitIndex = 1;
 	waitIndex++;
 	if (waitIndex == 2)
 	{
 		hero.MoveHero();
 		enemy.MoveEnemy();
+		enemy.attack();
 		bullet.MoveBullet();
-		bullet.attack();
 		waitIndex = 1;
 	}
 }
