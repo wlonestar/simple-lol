@@ -23,12 +23,14 @@ IMAGE sn_up;
 IMAGE sn_down;
 IMAGE sn_left;
 IMAGE sn_right;
-IMAGE yasuo;
+IMAGE timo;
 IMAGE bullets;
 IMAGE bullet_up;
 IMAGE bullet_down;
 IMAGE bullet_left;
 IMAGE bullet_right;
+IMAGE zed;
+IMAGE yasuo;
 
 static int Enmax = 1;
 static int Ennum = 1;
@@ -93,7 +95,9 @@ void loadimage()
 	loadimage(&sn_down, _T("./images/sn_down.png"), sn_width, sn_height);
 	loadimage(&sn_left, _T("./images/sn_left.png"), sn_width, sn_height);
 	loadimage(&sn_right, _T("./images/sn_right.png"), sn_width, sn_height);
-	loadimage(&yasuo, _T("./images/yasuo.png"), 125, 100);
+	loadimage(&timo, _T("./images/timo.png"), 125, 100);
+	loadimage(&zed, _T("./images/zed.png"), 359*0.75, 256*0.75);
+	loadimage(&yasuo, _T("./images/yasuo.png"));
 	loadimage(&bullet_up, _T("./images/bullet_up.png"), bullet_width, bullet_height);
 	loadimage(&bullet_down, _T("./images/bullet_down.png"), bullet_width, bullet_height);
 	loadimage(&bullet_left, _T("./images/bullet_left.png"), bullet_height, bullet_width);
@@ -102,22 +106,23 @@ void loadimage()
 
 double ez_x = WIDTH / 2;
 double ez_y = HEIGHT / 2;
-double ez_v = 1;//速度
+double ez_v = 1.2;//速度
 int is = 0;
-int eis[15] = { 1 };
-int Enexist[15] = { 0 };
+int eis[6] = { 1 };
+int Enexist[6] = { 0 };
 int score = 0;
 char ez_direction = 'w';
 char eze = 'w';
 int iseze = 1;
 int eif = 1;
 int alive = 1;
+int bulldis = 1;
 
-double en_x[5], en_y[5];//当前位置
-double x[5], y[5];//距离之差
-double encos[5], ensin[5];
-double en_vx[5], en_vy[5];
-double en_v = 0.3;
+double en_x[6] = { 10000 }, en_y[6] = { 10000 };//当前位置
+double x[6], y[6];//距离之差
+double encos[6], ensin[6];
+double en_vx[6], en_vy[6];
+double en_v[6] = { 0.3 };
 
 double eza_v;
 double eza_x, eza_y;
@@ -139,11 +144,11 @@ public:
 			sn = sn_up;
 		else if (ez_direction == 'a')
 			sn = sn_left;
-		else if (ez_direction == 's')
+		else if (ez_direction == 's') 
 			sn = sn_down;
-		else if (ez_direction == 'd')
+		else if (ez_direction == 'd') 
 			sn = sn_right;
-		for (i = 0;i < 5;i++)
+		for (i = 0;i < 6;i++)
 		{
 			if (sqrt((ez_x - en_x[i]) * (ez_x - en_x[i]) + (ez_y - en_y[i]) * (ez_y - en_y[i]) <= 1000))
 				alive = 0;
@@ -152,7 +157,7 @@ public:
 
 	void ezE()
 	{
-		if ((GetAsyncKeyState(0x45) & 0x8000) && iseze == 1)
+		if ((GetAsyncKeyState(0x45) & 0x8000) && iseze == 1 && score>7)
 		{
 			if (eze == 'a')
 			{
@@ -238,56 +243,59 @@ public:
 	{
 		Enexist[0] = 1;
 		int i;
-		for (i = 0;i < 5;i++)
+		for (i = 0;i < 6;i++)
 		{
 			if (i % 2 == 1)
 				en_x[i] = -50;
 			else
 				en_x[i] = 1570;
 			en_y[i] = rand() % 785;
-			en_v = 0.3;
+			en_v[i] = (rand()%5) / 10 + 0.2;
 		}
 	}
 
 	void MoveEnemy()
 	{
 		int i = 0;
-		for (i = 0;i < 5;i++)
+		for (i = 0;i < 6;i++)
 		{
 			if (Enexist[i])
 			{
 				encos[i] = (ez_x - en_x[i]) / sqrt((ez_x - en_x[i]) * (ez_x - en_x[i]) + (ez_y - en_y[i]) * (ez_y - en_y[i]));
 				ensin[i] = (ez_y - en_y[i]) / sqrt((ez_x - en_x[i]) * (ez_x - en_x[i]) + (ez_y - en_y[i]) * (ez_y - en_y[i]));
-				en_vx[i] = encos[i] * en_v;
-				en_vy[i] = ensin[i] * en_v;
+				en_vx[i] = encos[i] * en_v[i];
+				en_vy[i] = ensin[i] * en_v[i];
 				en_x[i] += en_vx[i];
 				en_y[i] += en_vy[i];
 				if (eis[i] == 0)
 				{
-					if (i % 4 == 1)
+					int p = rand() % 4;
+					if (p % 4 == 1)
 					{
-						en_x[i] = 1670;
+						en_x[i] = 1770;
 						en_y[i] = rand() % 785;
 						eis[i] = 1;
 					}
-					else if (i % 4 == 2)
+					else if (p % 4 == 2)
 					{
-						en_x[i] = -70;
+						en_x[i] = -170;
 						en_y[i] = rand() % 785;
 						eis[i] = 1;
 					}
-					else if (i % 4 == 3)
+					else if (p % 4 == 3)
 					{
-						en_y[i] = -70;
+						en_y[i] = -170;
 						en_x[i] = rand() % 1520;
 						eis[i] = 1;
 					}
-					else if (i % 4 == 0)
+					else if (p % 4 == 0)
 					{
-						en_y[i] = 850;
+						en_y[i] = 950;
 						en_x[i] = rand() % 1520;
 						eis[i] = 1;
 					}
+					if(en_v[i]<=1.05)
+						en_v[i] += 0.1;
 				}
 			}
 			else
@@ -297,31 +305,65 @@ public:
 
 	void attack()
 	{
-		int i;
-		for (i = 0;i < 5;i++)
+		int j;
+		double disx, disy;
+		for (j = 0;j < Enmax;j++)
 		{
-			if (Enexist[i])
+			if (j % 3 == 0)
 			{
-				if (sqrt((eza_x + 19 * 0.75 - en_x[i] - 65) * (eza_x + 19 * 0.75 - en_x[i] - 65) + (eza_y + 19 * 0.75 - en_y[i] - 50) * (eza_y + 19 * 0.75 - en_y[i] - 50) <= 200))
-				{
-					eza_x = -1000;
-					eza_y = -1000;
-					eis[i] = 0;
-					is = 0;
-					score++;
-				}
+				disx = abs(eza_x - en_x[j] - 47.5);
+				disy = abs(eza_y - en_y[j] - 30);
 			}
-			else
-				break;
+			else if (j % 3 == 1)
+			{
+				disx = abs(eza_x - en_x[j] - 120);
+				disy = abs(eza_y - en_y[j] - 66);
+			}
+			else if (j % 3 == 2)
+			{
+				disx = abs(eza_x - en_x[j] - 106);
+				disy = abs(eza_y - en_y[j] - 55);
+			}
+			if (disx <= 40 && disy <= 30 && j%3==0)
+			{
+				is = 0;
+				eis[j] = 0;
+				eza_x = -1000;
+				eza_y = -1000;
+				score++;
+				bulldis = 0;
+			}
+			if (disx <= 50 && disy <= 45 && j % 3 == 1)
+			{
+				is = 0;
+				eis[j] = 0;
+				eza_x = -1000;
+				eza_y = -1000;
+				score++;
+				bulldis = 0;
+			}
+			if (disx <= 50 && disy <= 45 && j % 3 == 2)
+			{
+				is = 0;
+				eis[j] = 0;
+				eza_x = -1000;
+				eza_y = -1000;
+				score++;
+				bulldis = 0;
+			}
 		}
 	}
 
 	void ShowEnemy()
 	{
 		int i;
-		for (i = 0;i < 5;i++)
+		for (i = 0;i < 6;i++)
 		{
-			if (Enexist[i])
+			if (Enexist[i] && i%3==0)
+				drawAlpha(&timo, en_x[i], en_y[i]);
+			else if (Enexist[i] && i % 3 == 1)
+				drawAlpha(&zed, en_x[i], en_y[i]);
+			else if (Enexist[i] && i % 3 == 2)
 				drawAlpha(&yasuo, en_x[i], en_y[i]);
 		}
 	}
@@ -369,7 +411,12 @@ public:
 		}
 		if (is)
 			eza_l += eza_v;
-		if (eza_l >= 600)
+		if (!bulldis)
+		{
+			eza_l = 0;
+			bulldis = 1;
+		}
+		else if (eza_l >= 600)
 		{
 			is = 0;
 			eza_l = 0;
@@ -422,7 +469,7 @@ void UpdateWithoutInput()
 	clock_t now = clock();//获得当前时刻
 	static int estartsecond = 0;
 	static int elastsecond = 0;
-	if (nowSecond == lastSecond + 5 && Enmax <= 10)
+	if (nowSecond == lastSecond + 5 && Enmax <= 6)
 	{
 		lastSecond = nowSecond;
 		Enmax += 1;
@@ -449,8 +496,8 @@ void UpdateWithoutInput()
 	{
 		hero.MoveHero();
 		enemy.MoveEnemy();
-		enemy.attack();
 		bullet.MoveBullet();
+		enemy.attack();
 		waitIndex = 1;
 	}
 }
