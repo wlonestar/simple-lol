@@ -17,75 +17,72 @@ void UpdateWithInput();    //有输入时更新
 /*--------------------------------------------------*/
 
 /*--------------- 定义游戏配置数据 ---------------*/
-#define PI            3.14159265359 //圆周率
-#define time_sleep    300           //定义按键反馈时间
-#define WIDTH         1520          //页面宽度
-#define HEIGHT        785           //页面长度
-#define len           1320          //进度条总长度
-#define sn_width      82            //人物宽度
-#define sn_height     94            //人物高度
-#define yasuo_width   100           //斜着的亚索的宽
-#define yasuo_height  100           //斜着的亚索的长
-#define yasuo_widthd  110           //亚索的宽
-#define yasuo_heightd 88            //亚索的长
-#define timo_width    72            //斜着的提莫的宽
-#define timo_height   60            //斜着的提莫的长
-#define zed_width     133.5         //斜着的劫的宽
-#define zed_height    121.5         //斜着的劫的长
-#define zed_widthd    145.5         //劫的宽
-#define zed_heightd   85            //劫的长
-#define bullet_width  28.5          //秘术射击宽度
-#define bullet_height 58.5          //秘术射击长度
+#define time_sleep      300     //定义按键反馈时间
+#define WIDTH          1520     //页面宽度
+#define HEIGHT          785     //页面长度
+#define sn_width         82     //人物宽度
+#define sn_height        94     //人物高度
+#define yasuo_width     100     //斜着的亚索的宽
+#define yasuo_height    100     //斜着的亚索的长
+#define yasuo_widthd    110     //亚索的宽
+#define yasuo_heightd    88     //亚索的长
+#define timo_width       72     //斜着的提莫的宽
+#define timo_height      60     //斜着的提莫的长
+#define zed_width       134     //斜着的劫的宽
+#define zed_height      122	    //斜着的劫的长
+#define zed_widthd      146     //劫的宽
+#define zed_heightd      85     //劫的长
+#define bullet_width     29     //秘术射击宽度
+#define bullet_height    59     //秘术射击长度
 /*-----------------------------------------------*/
 
 /*--------------- 定义图片对象 ---------------*/
-IMAGE begin_pic;        //开始加载界面图片
-IMAGE game_bk;          //游戏背景图
-IMAGE tips;             //tips 按钮图片
-IMAGE tips_cover;       //按钮触发反色图片
-IMAGE quit;             //quit 按钮图片
-IMAGE quit_cover;       //按钮触发反色图片
-IMAGE rank1;            //rank 按钮图片
-IMAGE rank_cover;       //按钮触发反色图片
-IMAGE backtomenu;       //back to menu 按钮图片
-IMAGE backtomenu_cover; //按钮触发反色图片
+IMAGE game_bk;           //游戏背景图
+IMAGE tips;              //tips 按钮图片
+IMAGE tips_cover;        //按钮触发反色图片
+IMAGE quit;              //quit 按钮图片
+IMAGE quit_cover;        //按钮触发反色图片
+IMAGE rank1;             //rank 按钮图片
+IMAGE rank_cover;        //按钮触发反色图片
+IMAGE backtomenu;        //back to menu 按钮图片
+IMAGE backtomenu_cover;  //按钮触发反色图片
 /*-------------------------------------------*/
 
 /*--------------- 定义全局变量 ---------------*/
-bool start;              //判断是否进入游戏
-bool click_tips;         //是否点击提示
-bool click_rank;         //是否点击 rank
-bool click_quit;         //是否点击退出
-bool click_continue;     //是否继续游戏
-bool click_backtomenu;   //是否返回
-bool click_mode1;        //是否选择模式 1
-bool click_mode2;        //是否选择模式 2
-bool start_mode1;        //是否开始模式 1
-bool start_mode2;        //是否开始模式 2
-bool pause_exit;         //是否在暂停页面退出
-bool isbreak1;           //模式 1 是否打破纪录
-bool isbreak2;           //模式 2 是否打破纪录
-double ez_x;             //初始化 ez x 坐标
-double ez_y;             //初始化 ez y 坐标
-int score1;              //模式 1 的分数
-int score2;              //模式 2 的分数
-bool is;                 //子弹是否需要绘制
-bool eis[6];             //敌人是否可用
-bool eif;                //记录使用 e 的开始时间
-bool qif;                //记录使用 q 的开始时间
-bool alive;              //是否失败
-bool iseze;              //e 是否可用
-bool isezq;              //q 是否可用
-bool flashis;            //闪现图案是否生成
-double flash_x, flash_y; //闪现的 x, y 坐标
-double xe = 30, xq = 30; //定义闪现图片的 X Y 坐标
-double en_x[6], en_y[6]; //当前位置
-bool Enexist[6];         //敌人是否被击中
-double eza_x, eza_y;     //子弹的坐标
-char eza_dir;            //初始化子弹的方向
-bool bulldis;            //子弹状态
-int Enmax;               //敌人目前最大数量
-int Ennum;               //敌人目前数量
+bool start;               //判断是否进入游戏
+bool click_tips;          //是否点击提示
+bool click_rank;          //是否点击 rank
+bool click_quit;          //是否点击退出
+bool click_continue;      //是否继续游戏
+bool click_backtomenu;    //是否返回
+bool click_mode1;         //是否选择模式 1
+bool click_mode2;         //是否选择模式 2
+bool start_mode1;         //是否开始模式 1
+bool start_mode2;         //是否开始模式 2
+bool pause_exit;          //是否在暂停页面退出
+bool isbreak1;            //模式 1 是否打破纪录
+bool isbreak2;            //模式 2 是否打破纪录
+double ez_x;              //初始化 ez x 坐标
+double ez_y;              //初始化 ez y 坐标
+int score1;               //模式 1 的分数
+int score2;               //模式 2 的分数
+bool is;                  //子弹是否需要绘制
+bool eis[6];              //敌人是否可用
+bool eif;                 //记录使用 e 的开始时间
+bool qif;                 //记录使用 q 的开始时间
+bool alive;               //是否失败
+bool iseze;               //e 是否可用
+bool isezq;               //q 是否可用
+bool flashis;             //闪现图案是否生成
+double flash_x, flash_y;  //闪现的 x, y 坐标
+double xe = 30, xq = 30;  //定义闪现图片的 X Y 坐标
+double en_x[6], en_y[6];  //当前位置
+bool Enexist[6];          //敌人是否被击中
+double eza_x, eza_y;      //子弹的坐标
+char eza_dir;             //初始化子弹的方向
+bool bulldis;             //子弹状态
+int Enmax;                //敌人目前最大数量
+int Ennum;                //敌人目前数量
 /*-------------------------------------------*/
 
 /*----- 定义鼠标消息结构体 -----*/
@@ -135,16 +132,16 @@ void Init()
 /*--------------- 更改窗口标题 ---------------*/
 void changetitle()
 {
-	HWND hand = GetHWnd();                        //获取窗口句柄
-	SetWindowText(hand, _T("League of Legends")); //设置窗口标题
+	HWND hand = GetHWnd();                         //获取窗口句柄
+	SetWindowText(hand, _T("League of Legends"));  //设置窗口标题
 }
 /*-------------------------------------------*/
 
 /*--------------- 载入PNG图并去除透明部分 ---------------*/
 void drawAlpha(IMAGE* picture, int picture_x, int picture_y) //x 为载入图片的 X 坐标，y 为 Y 坐标
 {
-	DWORD* dst = GetImageBuffer();        //GetImageBuffer() 函数，用于获取绘图设备的显存指针
-	DWORD* src = GetImageBuffer(picture); //获取 picture 的显存指针
+	DWORD* dst = GetImageBuffer();         //GetImageBuffer() 函数，用于获取绘图设备的显存指针
+	DWORD* src = GetImageBuffer(picture);  //获取 picture 的显存指针
 	int src_width = picture->getwidth();
 	int src_height = picture->getheight();
 	int dst_width = getwidth();
@@ -193,7 +190,6 @@ void drawAlpha(IMAGE* picture, int picture_x, int picture_y) //x 为载入图片
 /*--------------- 载入图片 ---------------*/
 void LoadImage()
 {
-	loadimage(&begin_pic, _T("./images/begin.jpg"));
 	loadimage(&game_bk, _T("./images/game_bk.jpg"));
 	loadimage(&tips, _T("./images/tips_ch.jpg"), 185, 100);
 	loadimage(&tips_cover, _T("./images/tips_cover_ch.jpg"), 185, 100);
@@ -206,48 +202,98 @@ void LoadImage()
 }
 /*---------------------------------------*/
 
-/*--------------- 开始界面加载动画 ---------------*/
-void beginAnimation()
-{
-	TCHAR s[20];
-	setbkmode(TRANSPARENT); //设置字体背景透明
-	settextcolor(RGB(255, 255, 255));
-	settextstyle(20, 0, _T("Consolas"));
-	for (int y = 0; y <= len; y += 5)
-	{
-		cleardevice(); //清屏函数
-		putimage(0, 0, &begin_pic); //放置背景图片
-		outtextxy(WIDTH / 2 - 10, HEIGHT / 2 + 200 - 30, _T("loading..."));
-		setfillcolor(RGB(255, 255, 255));
-		solidrectangle((WIDTH - len) / 2, HEIGHT / 2 + 200, (WIDTH - len) / 2 + y, HEIGHT / 2 + 200 + 0.9);
-		_stprintf(s, _T("%.0f"), ((float)y / (float)len) * 100.0); //浮点型转换成字符串
-		outtextxy(WIDTH - 130 - 5, HEIGHT / 2 + 200 + 10, s); // 输出加载百分比
-		outtextxy(WIDTH - 130 + 23, HEIGHT / 2 + 200 + 10, _T("\%")); //输出百分号
-		outtextxy(WIDTH / 2 - 130, HEIGHT - 50, _T("Designed by XYX, LZY and WJL.")); //输出开发者信息
-		Sleep(20);
-		FlushBatchDraw();
-	}
-	Sleep(1500);
-}
+/*--------------- 精确到微秒的延时类 ---------------*/
+class MyTimer {
+private:
+	LARGE_INTEGER m_clk; //保存时钟信息
+	LONGLONG m_oldclk;	 //保存开始时钟和结束时钟
+	int m_freq;			 //时钟频率(时钟时间换算率)，时间差
 
-/*--------------- 游戏中途加载动画 ---------------*/
-void animation()
-{
-	setbkcolor(RGB(0, 38, 47));
-	cleardevice(); //清屏函数
-	setbkmode(TRANSPARENT); //设置字体背景透明
-	settextcolor(RGB(255, 255, 255));
-	settextstyle(20, 0, _T("Consolas"));
-	outtextxy(WIDTH / 2 - 10, HEIGHT / 2 + 200 - 30, _T("loading..."));
-	for (int y = 0; y < len; y += 20)
+public:
+	MyTimer() //构造函数
 	{
-		setfillcolor(RGB(255, 255, 255));
-		solidrectangle((WIDTH - len) / 2, HEIGHT / 2 + 200, (WIDTH - len) / 2 + y, HEIGHT / 2 + 200 + 0.9);
-		Sleep(10);
-		FlushBatchDraw();
+		QueryPerformanceFrequency(&m_clk);
+		m_freq = (int)m_clk.QuadPart / 1000;
+		m_oldclk = 0; // 获得计数器的时钟频率
 	}
-	Sleep(300);
-}
+
+	void Sleep(int ms) //延时
+	{
+		unsigned int c = ms * m_freq;
+		if (m_oldclk == 0)
+		{
+			QueryPerformanceCounter(&m_clk); //开始计时
+			m_oldclk = m_clk.QuadPart;       //获得开始时钟
+		}
+		m_oldclk += c;
+		QueryPerformanceCounter(&m_clk);
+		if (m_clk.QuadPart > m_oldclk)
+			m_oldclk = m_clk.QuadPart;
+		else
+			do
+			{
+				::Sleep(1);
+				QueryPerformanceCounter(&m_clk); //获得终止时钟
+			} while (m_clk.QuadPart < m_oldclk);
+	}
+
+	void Reset() //重置延时器
+	{
+		m_oldclk = 0;
+	}
+};
+MyTimer timer;
+
+/*--------------- 游戏加载动画类 ---------------*/
+class Load {
+private:
+	int len = 1320;   //进度条总长度
+	IMAGE begin_pic;  //开始加载界面图片
+
+public:
+	void beginAnimation() //开始界面加载动画
+	{
+		TCHAR s[20];
+		setbkmode(TRANSPARENT); //设置字体背景透明
+		settextcolor(RGB(255, 255, 255));
+		settextstyle(20, 0, _T("Consolas"));
+		for (int y = 0; y <= len; y += 5)
+		{
+			cleardevice(); //清屏函数
+			loadimage(&begin_pic, _T("./images/begin.jpg"));
+			putimage(0, 0, &begin_pic); //放置背景图片
+			outtextxy(WIDTH / 2 - 10, HEIGHT / 2 + 200 - 30, _T("loading..."));
+			setfillcolor(RGB(255, 255, 255));
+			solidrectangle((WIDTH - len) / 2, HEIGHT / 2 + 200, (WIDTH - len) / 2 + y, HEIGHT / 2 + 200 + 0.9);
+			_stprintf(s, _T("%.0f"), ((float)y / (float)len) * 100.0); //浮点型转换成字符串
+			outtextxy(WIDTH - 130 - 5, HEIGHT / 2 + 200 + 10, s); // 输出加载百分比
+			outtextxy(WIDTH - 130 + 23, HEIGHT / 2 + 200 + 10, _T("\%")); //输出百分号
+			outtextxy(WIDTH / 2 - 130, HEIGHT - 50, _T("Powered by LZY, WJL and XYX.")); //输出开发者信息
+			timer.Sleep(20);
+			FlushBatchDraw();
+		}
+		timer.Sleep(1500);
+	}
+	
+	void animation() //游戏中途加载动画
+	{
+		setbkcolor(RGB(0, 38, 47));
+		cleardevice(); //清屏函数
+		setbkmode(TRANSPARENT); //设置字体背景透明
+		settextcolor(RGB(255, 255, 255));
+		settextstyle(20, 0, _T("Consolas"));
+		outtextxy(WIDTH / 2 - 10, HEIGHT / 2 + 200 - 30, _T("loading..."));
+		for (int y = 0; y < len; y += 20)
+		{
+			setfillcolor(RGB(255, 255, 255));
+			solidrectangle((WIDTH - len) / 2, HEIGHT / 2 + 200, (WIDTH - len) / 2 + y, HEIGHT / 2 + 200 + 0.9);
+			timer.Sleep(20);
+			FlushBatchDraw();
+		}
+		timer.Sleep(300);
+	}
+};
+Load load;
 
 /*--------------- 定义开始界面对象 ---------------*/
 class Menu {
@@ -259,6 +305,7 @@ private:
 	IMAGE skillshot_cover; //按钮触发反色图片
 	IMAGE fireball;        //fireball 按钮图片
 	IMAGE fireball_cover;  //按钮触发反色图片
+
 public:
 	void initMenu()
 	{
@@ -270,17 +317,17 @@ public:
 		loadimage(&fireball_cover, _T("./images/fireball_cover_ch.jpg"), 185, 100);
 	}
 
-	void Tips() // 提示页面
+	void Tips() //提示页面
 	{
 		putimage(0, 0, &tips_bk);
 		FlushBatchDraw();
-		Sleep(2);
+		timer.Sleep(2);
 		system("pause"); //防止程序一闪而过
 	}
 
 	void Quit() //退出
 	{
-		animation();
+		load.animation();
 		EndBatchDraw(); //结束绘制
 		mciSendString(_T("close bgm"), NULL, 0, NULL); //关闭背景音乐 bgm
 		closegraph();
@@ -316,7 +363,7 @@ public:
 		outtextxy(WIDTH / 2 - 270, HEIGHT / 2 + 40, _T("火球：")); //模式一记录
 		outtextxy(WIDTH / 2 + 130, HEIGHT / 2 + 40, c2);
 		FlushBatchDraw();
-		Sleep(1000);
+		timer.Sleep(1000);
 	}
 
 	void BeginMenu() //当点击游戏模式后， 加载，进入游戏，打开游戏背景音乐
@@ -326,7 +373,7 @@ public:
 			MenuInput();
 			MenuShow();
 		}
-		animation();
+		load.animation();
 		mciSendString(_T("open ./music/game_bgm.mp3 alias bgm"), NULL, 0, NULL); //打开 game_bgm.mp3 文件，记为 bgm
 		mciSendString(_T("play bgm repeat"), NULL, 0, NULL); //重复播放 bgm
 	}
@@ -355,7 +402,7 @@ public:
 		else
 			putimage(700, 650, &quit);
 		FlushBatchDraw();
-		Sleep(2);
+		timer.Sleep(2);
 	}
 
 	void MenuInput()
@@ -371,7 +418,7 @@ public:
 					mciSendString(_T("close click"), NULL, 0, NULL); //先关闭音乐，实现多次播放
 					mciSendString(_T("open ./music/click.mp3 alias click"), NULL, 0, NULL);
 					mciSendString(_T("play click"), NULL, 0, NULL);
-					Sleep(time_sleep);
+					timer.Sleep(time_sleep);
 					start = true;
 					start_mode1 = true;
 				}
@@ -386,7 +433,7 @@ public:
 					mciSendString(_T("close click"), NULL, 0, NULL);
 					mciSendString(_T("open ./music/click.mp3 alias click"), NULL, 0, NULL);
 					mciSendString(_T("play click"), NULL, 0, NULL);
-					Sleep(time_sleep);
+					timer.Sleep(time_sleep);
 					start = true;
 					start_mode2 = true;
 				}
@@ -401,7 +448,7 @@ public:
 					mciSendString(_T("close click"), NULL, 0, NULL);
 					mciSendString(_T("open ./music/click.mp3 alias click"), NULL, 0, NULL);
 					mciSendString(_T("play click"), NULL, 0, NULL);
-					Sleep(time_sleep);
+					timer.Sleep(time_sleep);
 					Tips(); //打开提示
 				}
 			}
@@ -415,7 +462,7 @@ public:
 					mciSendString(_T("close click"), NULL, 0, NULL);
 					mciSendString(_T("open ./music/click.mp3 alias click"), NULL, 0, NULL);
 					mciSendString(_T("play click"), NULL, 0, NULL);
-					Sleep(time_sleep);
+					timer.Sleep(time_sleep);
 					Rank(); //打开rank
 				}
 			}
@@ -429,7 +476,7 @@ public:
 					mciSendString(_T("close click"), NULL, 0, NULL);
 					mciSendString(_T("open ./music/click.mp3 alias click"), NULL, 0, NULL);
 					mciSendString(_T("play click"), NULL, 0, NULL);
-					Sleep(time_sleep);
+					timer.Sleep(time_sleep);
 					Quit(); //退出游戏
 				}
 			}
@@ -445,6 +492,7 @@ class Gameover {
 private:
 	/*----- 定义图片对象 -----*/
 	IMAGE gameover_bk; //游戏结束界面背景图
+
 public:
 	void initGameover()
 	{
@@ -503,7 +551,7 @@ public:
 			fp = fopen("./rank.dat", "w"); //参数 w 表示写入数据
 			fprintf(fp, "%d %d", score1, before2); //写入新纪录
 			fclose(fp);
-			Sleep(1000);
+			timer.Sleep(1000);
 		}
 		if (score2 > before2)
 		{
@@ -512,7 +560,7 @@ public:
 			fp = fopen("./rank.dat", "w"); //参数 w 表示写入数据
 			fprintf(fp, "%d %d", before1, score2); //写入新纪录
 			fclose(fp);
-			Sleep(1000);
+			timer.Sleep(1000);
 		}
 	}
 
@@ -546,7 +594,7 @@ public:
 					mciSendString(_T("close click"), NULL, 0, NULL);
 					mciSendString(_T("open ./music/click.mp3 alias click"), NULL, 0, NULL);
 					mciSendString(_T("play click"), NULL, 0, NULL);
-					Sleep(time_sleep);
+					timer.Sleep(time_sleep);
 					GameoverQuit(); //退出游戏
 				}
 			}
@@ -560,7 +608,7 @@ public:
 					mciSendString(_T("close click"), NULL, 0, NULL);
 					mciSendString(_T("open ./music/click.mp3 alias click"), NULL, 0, NULL);
 					mciSendString(_T("play click"), NULL, 0, NULL);
-					Sleep(time_sleep);
+					timer.Sleep(time_sleep);
 					start = false;
 					GameoverBackMenu();
 				}
@@ -572,7 +620,7 @@ public:
 
 	void GameoverBackMenu() // 回到主菜单
 	{
-		animation();
+		load.animation();
 		mciSendString(_T("close bgm"), NULL, 0, NULL); //关闭背景音乐
 		/*--------------- 重新开始 ---------------*/
 		StartUp(); //初始化
@@ -602,6 +650,7 @@ private:
 	IMAGE continu;       //continue 按钮图片
 	IMAGE continu_cover; //按钮触发反色图片
 	IMAGE pause_bk;      //暂停界面背景图
+
 public:
 	void initPause()
 	{
@@ -652,7 +701,7 @@ public:
 					mciSendString(_T("close click"), NULL, 0, NULL);
 					mciSendString(_T("open ./music/click.mp3 alias click"), NULL, 0, NULL);
 					mciSendString(_T("play click"), NULL, 0, NULL);
-					Sleep(time_sleep);
+					timer.Sleep(time_sleep);
 					menu.Tips(); //打开提示
 				}
 			}
@@ -666,7 +715,7 @@ public:
 					mciSendString(_T("close click"), NULL, 0, NULL);
 					mciSendString(_T("open ./music/click.mp3 alias click"), NULL, 0, NULL);
 					mciSendString(_T("play click"), NULL, 0, NULL);
-					Sleep(time_sleep);
+					timer.Sleep(time_sleep);
 					pause_exit = true;
 				}
 			}
@@ -680,7 +729,7 @@ public:
 					mciSendString(_T("close click"), NULL, 0, NULL);
 					mciSendString(_T("open ./music/click.mp3 alias click"), NULL, 0, NULL);
 					mciSendString(_T("play click"), NULL, 0, NULL);
-					Sleep(time_sleep);
+					timer.Sleep(time_sleep);
 					gameover.GameoverBackMenu(); //返回开始界面
 				}
 			}
@@ -710,6 +759,7 @@ private:
 	char ez_direction; //初始化ez的方向
 	char eze; //技能1：闪现
 	bool moveState;
+
 public:
 	void InitHero()
 	{
@@ -945,7 +995,7 @@ public:
 		ezE(); //调用e函数
 		if ((GetAsyncKeyState(0x41) & 0x8000)) //如果按下a
 		{
-			moveState = true;
+			moveState = true; 
 			ez_x -= ez_v; //向左移动
 			ez_direction = 'a'; //定义方向向左
 			if (ez_x <= 0) //如果到边界
@@ -1095,6 +1145,7 @@ private:
 	double encos[6], ensin[6]; //角度
 	double en_vx[6], en_vy[6]; //分速度
 	double en_v[6]; //总速度
+
 public:
 	void InitEnemy()
 	{
@@ -1310,6 +1361,7 @@ private:
 	IMAGE bullet_right;
 	double eza_v; //定义子弹速度
 	double eza_l; //定义子弹里程数
+
 public:
 	void InitBullet()
 	{
@@ -1402,6 +1454,7 @@ private:
 	//定义火球参数和变量
 	double fire_x[6], fire_y[6], firedir[6], fire_v;
 	double firecos[6], firesin[6], firevx[6], firevy[6];
+
 public:
 	void InitFireball()
 	{
@@ -1543,7 +1596,7 @@ public:
 					firedir[i] = 6;
 			}
 		}
-		for (int i = 0;i < 6;i++)
+		for (int i = 0; i < 6; i++)
 		{
 			if (firedir[i] == 1 || firedir[i] == 2 || firedir[i] == 3 || firedir[i] == 0)
 			{
@@ -1690,7 +1743,7 @@ void Show()
 int main()
 {
 	StartUp(); //初始化
-	beginAnimation();
+	load.beginAnimation();
 	menu.BeginMenu(); //页面初始化
 	while (1)
 	{
