@@ -125,7 +125,7 @@ void Init()
 	}
 	eza_dir = 'w';
 	bulldis = true;
-	Enmax = 2;
+	Enmax = 1;
 	Ennum = 1;
 }
 
@@ -1655,7 +1655,7 @@ void UpdateWithoutInput()
 	{
 		lastSecond = nowSecond; //更新时间数据
 		Enmax += 1; //敌人最大数量加一
-		Enexist[Enmax - 1] = true; //设置新增加敌人可用
+		Enexist[Enmax - 2] = true; //设置新增加敌人可用
 	}
 	nowSecond = (int(now - start) / CLOCKS_PER_SEC); //更新时间数据
 	if (!iseze) //如果e进入冷却
