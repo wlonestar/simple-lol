@@ -1049,7 +1049,7 @@ public:
 		setbkmode(TRANSPARENT);
 		settextcolor(RGB(255, 255, 255));
 		settextstyle(20, 0, _T("consolas"));
-		outtextxy(180, 25, _T("E"));
+		outtextxy(180, 25, _T("E / K"));
 		if (iseze) //当e为可用时
 		{
 			//绘制绿色 满的 冷却条
@@ -1080,7 +1080,7 @@ public:
 			setbkmode(TRANSPARENT);
 			settextcolor(RGB(255, 255, 255));
 			settextstyle(20, 0, _T("consolas"));
-			outtextxy(180, 50, _T("Q"));
+			outtextxy(180, 50, _T("Q / J"));
 			if (isezq) //如果q可用
 			{
 				//绘制绿色 满的冷却条
