@@ -1055,7 +1055,7 @@ public:
 			//绘制绿色 满的 冷却条
 			setlinecolor(RGB(0, 0, 0));
 			setfillcolor(RGB(0, 255, 0));
-			fillrectangle(30, 30, 170, 40);
+			solidrectangle(30, 30, 170, 40);
 			xe = 30;
 		}
 		else if (!iseze) //当e不可用时
@@ -1065,13 +1065,13 @@ public:
 				xe += 0.08;
 				setlinecolor(RGB(0, 0, 0));
 				setfillcolor(RED);
-				fillrectangle(30, 30, xe, 40);
+				solidrectangle(30, 30, xe, 40);
 			}
 			else //当进度条满了 而实际冷却时间没好时 仍为红色
 			{
 				setlinecolor(RGB(0, 0, 0));
 				setfillcolor(RED);
-				fillrectangle(30, 30, xe, 40);
+				solidrectangle(30, 30, xe, 40);
 			}
 		}
 		if (start_mode1) //在模式skillshot中
@@ -1086,7 +1086,7 @@ public:
 				//绘制绿色 满的冷却条
 				setlinecolor(RGB(0, 0, 0));
 				setfillcolor(RGB(0, 255, 0));
-				fillrectangle(30, 60, 170, 70);
+				solidrectangle(30, 60, 170, 70);
 				xq = 30;
 			}
 			else if (!isezq) //如果q不可用
@@ -1096,13 +1096,13 @@ public:
 					xq += 0.7;
 					setlinecolor(RGB(0, 0, 0));
 					setfillcolor(RED);
-					fillrectangle(30, 60, xq, 70);
+					solidrectangle(30, 60, xq, 70);
 				}
 				else //当进度条满了 而实际冷却时间没好时 仍为红色
 				{
 					setlinecolor(RGB(0, 0, 0));
 					setfillcolor(RED);
-					fillrectangle(30, 60, xq, 70);
+					solidrectangle(30, 60, xq, 70);
 				}
 			}
 		}
