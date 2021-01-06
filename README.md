@@ -88,15 +88,13 @@
 
     点击链接选择 Community 2019
 
-    ![](D:\file\教程\vs\vs1.jpg)
-
     下载完在开始菜单找到 Visual Studio Installer
 
-    ![](D:\file\教程\vs\vs2.jpg)
+    ![](./vs2.jpg)
 
     打开 vs installer，选择使用C++的桌面开发
 
-    ![](D:\file\教程\vs\vs3.jpg)
+    ![](./vs3.jpg)
 
     等待安装完毕，时间比较长
 
@@ -104,9 +102,7 @@
 
     下载完双击打开安装程序
 
-    ![](D:\file\教程\vs\easyx1.jpg)
-
-    vs2019安装好了会有上面两个选项，点击即可安装
+    vs2019安装好了会有 EasyX 文档 和 Visual C++ 2019 两个选项，点击即可安装
 
 ##### 2. 运行方法
 
