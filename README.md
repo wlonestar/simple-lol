@@ -1,6 +1,6 @@
-游戏演示视频已上传B站 
+游戏演示视频已上传B站  https://www.bilibili.com/video/BV1Cy4y127Th
 
-
+项目地址  https://github.com/wjl-lab/simple-lol
 
 
 
